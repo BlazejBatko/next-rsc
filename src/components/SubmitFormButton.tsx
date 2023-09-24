@@ -7,7 +7,7 @@ type Props = {
   handleAddTodo: (data: FormData) => Promise<void>;
 };
 
-const LoadingButton = ({ handleAddTodo }: Props) => {
+const SubmitFormButton = ({ handleAddTodo }: Props) => {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>("");
 
@@ -30,12 +30,12 @@ const LoadingButton = ({ handleAddTodo }: Props) => {
   return (
     <>
       <button
-        className={`border px-2 py-1 rounded-md `}
+        className={`border px-2 min-w-[75px] py-1 rounded-md `}
         disabled={pending}
         onClick={handleAddTodoClick}
       >
         {pending ? (
-          <div className="animate-spin">
+          <div className="animate-spin grid place-content-center">
             <Loader2 />
           </div>
         ) : (
@@ -50,4 +50,4 @@ const LoadingButton = ({ handleAddTodo }: Props) => {
   );
 };
 
-export default LoadingButton;
+export default SubmitFormButton;

@@ -1,7 +1,7 @@
 import { prisma } from "./db";
 import TodoItem from "../components/TodoItem";
 import { revalidatePath } from "next/cache";
-import LoadingButton from "../components/LoadingButton";
+import SubmitFormButton from "../components/SubmitFormButton";
 
 // QUERIES
 
@@ -44,9 +44,9 @@ const Home = async () => {
       throw new Error("Invalid title");
     }
 
-    revalidatePath("/");
-
     await addTodo(title);
+
+    revalidatePath("/");
   };
 
   const handleMarkAsDone = async (id: string, complete: boolean) => {
@@ -74,13 +74,9 @@ const Home = async () => {
           <span className="bg-slate-600 text-slate-400 rounded-[5px] px-1 italic">
             react server components
           </span>
-          - despite all actions on tasks are being reflected in sqlite database
-          there are no api calls and all queries are taking places on server
-        </code>
-
-        <code className="text-slate-400">
-          NOTE: there is intentionall throttle on submit calls to test handling
-          loading state
+          - despite all actions on tasks are being reflected in hosted
+          postgresql database there are no api calls and all queries are taking
+          place direclty on the server
         </code>
       </header>
 
@@ -90,18 +86,20 @@ const Home = async () => {
           name="title"
           className="rounded-md bg-inherit px-2 py-1 border border-slate-100 "
         />
-        <LoadingButton handleAddTodo={handleAddTodo} />
+        <SubmitFormButton handleAddTodo={handleAddTodo} />
       </form>
 
       <ul className="flex flex-col gap-2">
-        {todos.map((todo) => (
-          <TodoItem
-            handleDeleteTodo={handleDelete}
-            handleToggleComplete={handleMarkAsDone}
-            key={todo.id}
-            {...todo}
-          />
-        ))}
+        {todos
+          .sort((a, b) => Number(a.created_at) - Number(b.created_at))
+          .map((todo) => (
+            <TodoItem
+              key={todo.id}
+              handleDeleteTodo={handleDelete}
+              handleToggleComplete={handleMarkAsDone}
+              {...todo}
+            />
+          ))}
       </ul>
     </>
   );
